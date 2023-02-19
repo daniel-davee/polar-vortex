@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import List, Any, Dict
-from functools import partial
 from protocols.database_protocols import DatabaseConnection
 import shelve
 
-# db_path = Path(__file__).parent / 'shelve_databases'
-db_path = Path().cwd() / 'databases/shelve_databases'
+db_path = Path(__file__).parent / 'vortex_databases'
+# db_path = Path().cwd() / 'database/vortex_databases'
+if not db_path.exists(): db_path.mkdir()
+
 class ShelveInterface():
     
     def __init__(self, connection:DatabaseConnection=None) -> bool:

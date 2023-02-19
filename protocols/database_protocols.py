@@ -2,25 +2,30 @@ from typing import (
                     Protocol,
                     Any,
                     Optional,
+                    NamedTuple,
                     )
 from dataclasses import dataclass, astuple
 from pathlib import Path
 
 db_path = Path(__file__).parent
 
-@dataclass
-class DatabaseConnection():
+class DatabasePtr(NamedTuple):
     '''
     DatabaseConnections provides a uniform method to pass input to all the functions of the protocol. 
     The design pattern is Protocol defines actions, the Interface provides a uniform function interface.
     '''
     database:Optional[str] = None
     key: Optional[str] = None
-    value: Optional[str] = None
     index:Optional[int] = None
+
+@dataclass
+class DatabaseConnection():
+    
+    data_address : DatabasePtr
+    value : Any = None
     
     def __iter__(self):
-        return iter(astuple(self))
+        return iter(self.data_address+(self.value))
 
 class DatabaseProtocol(Protocol):
 
