@@ -13,7 +13,7 @@ root = Path()
 databases = root / 'databases'
 
 logger.set_minimum_level(logger.logLevels['debug'])
-class BaseModel():
+class PolarModel():
     '''
     This is the base model for all models. 
     Models allow easy mapping of data to the underlying storage(ORM).
@@ -110,13 +110,13 @@ class BaseModel():
         return cls.dbi.save()
 
 @dataclass(frozen=True,slots=True)
-class Field(BaseModel):
+class Field(PolarModel):
     database:str
     key:str
     name:str
     Type: str
     
-    class Meta(BaseModel.Meta):
+    class Meta(PolarModel.Meta):
         connection = DatabaseConnection('model','fields')
         
 Field.Meta.connect()
