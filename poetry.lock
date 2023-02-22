@@ -264,6 +264,21 @@ webencodings = "*"
 css = ["tinycss2 (>=1.1.0,<1.2)"]
 
 [[package]]
+name = "candy-wrapper"
+version = "0.0.2"
+description = "A sweet wrapper that lets object act js objects"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "candy_wrapper-0.0.2-py3-none-any.whl", hash = "sha256:3244de5fe8cbd9be9bae6740867d25a3c60c3e7127e5e279dd005354696fd4e4"},
+    {file = "candy_wrapper-0.0.2.tar.gz", hash = "sha256:445761411533e84ec692b6788da3f510d46ef76d5b55e139a12d83455522d88b"},
+]
+
+[package.dependencies]
+yes-or-no = "*"
+
+[[package]]
 name = "cffi"
 version = "1.15.1"
 description = "Foreign Function Interface for Python calling C code."
@@ -2029,7 +2044,19 @@ files = [
     {file = "widgetsnbextension-4.0.5.tar.gz", hash = "sha256:003f716d930d385be3fd9de42dd9bf008e30053f73bddde235d14fbeaeff19af"},
 ]
 
+[[package]]
+name = "yes-or-no"
+version = "0.0.1"
+description = "answers yes or no questions"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "yes_or_no-0.0.1-py3-none-any.whl", hash = "sha256:cae172332e6d56098484643e8cc4a51f64584ba76af22cff06f7d97fd695cc73"},
+    {file = "yes_or_no-0.0.1.tar.gz", hash = "sha256:647547e22afe0bf738903d60e30585fa081ea9c1a187e02ac92342d3da218528"},
+]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.9"
-content-hash = "1af4eed36b5e39c2071846929fb5596bf799a1059875a4afd39788ba60b7346a"
+content-hash = "310c32edf6d3288ec01a00fe589ee0a45f067915d2e15980e7bc2d7552867fd6"

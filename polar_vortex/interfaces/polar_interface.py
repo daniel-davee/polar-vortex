@@ -22,11 +22,13 @@ class PolarsInterface():
     key_file:Path
     lazyframe:LazyFrame
     
-    def __init__(self,connection:DatabaseConnection)->LazyFrame:
+    def __init__(self,connection:DatabaseConnection=None,
+                 file_type:str = 'parquet')->LazyFrame:
+        connection = connection or DatabaseConnection()
         database, key = connection.database, connection.key
         if not (db_file:=(db_path/database)).exists():
             db_file.mkdir()
-        if not (key_file := (db_file/f'{key}.parquet')).exists():
+        if not (key_file := (db_file/f'{key}.{file_type}')).exists():
             DataFrame({'default':[]}).write_parquet(key_file)
         self.key_file:Path = key_file
         self.lazyframe:LazyFrame =scan_parquet(key_file)
