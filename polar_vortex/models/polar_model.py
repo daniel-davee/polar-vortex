@@ -1,9 +1,9 @@
 from typing import NamedTuple, Any, Tuple, Dict, Set, List, Iterable
 from dataclasses import dataclass, field, fields, astuple, asdict
 from pathlib import Path
-from log.log_interface import logger
+from interfaces.log_interface import logger
 from protocols.database_protocols import DatabaseProtocol, DatabaseConnection
-from databases.polar_interfaces import (PolarsInterface, 
+from interfaces.polar_interface import (PolarsInterface, 
                                         LazyFrame,
                                         col,
                                         )

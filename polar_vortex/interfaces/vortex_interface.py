@@ -7,7 +7,11 @@ db_path = Path(__file__).parent / 'vortex_databases'
 # db_path = Path().cwd() / 'database/vortex_databases'
 if not db_path.exists(): db_path.mkdir()
 
-class ShelveInterface():
+class VortexInterface():
+    
+    '''
+    VortexInterface provides a uniform interface to a shelve database.
+    '''
     
     def __init__(self, connection:DatabaseConnection=None) -> bool:
         self.connection = connection or DatabaseConnection()
