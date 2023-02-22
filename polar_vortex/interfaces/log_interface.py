@@ -20,11 +20,11 @@ def debuginfo(log_fn:Callable)->Callable:
     return wrapper    
     
 
-logger = Logger('prefect')
+logger = Logger('polar_vortex')
 
 logger.debug = debuginfo(logger.debug)
 
 pp = PrettyPrinter(indent=4)
 
 
-logger.set_log_file_basename((log_dir/'app_logs').as_posix())
+logger.set_log_file_basename((log_dir/'main_logs').as_posix())

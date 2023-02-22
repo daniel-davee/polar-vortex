@@ -1,11 +1,13 @@
+from .log_interface import logger
 from pathlib import Path
 from typing import List, Any, Dict
-from protocols.database_protocols import DatabaseConnection
+from ..protocols.database_protocols import DatabaseConnection
 import shelve
 
 db_path = Path(__file__).parent / 'vortex_databases'
 # db_path = Path().cwd() / 'database/vortex_databases'
 if not db_path.exists(): db_path.mkdir()
+
 
 class VortexInterface():
     
@@ -13,7 +15,7 @@ class VortexInterface():
     VortexInterface provides a uniform interface to a shelve database.
     '''
     
-    def __init__(self, connection:DatabaseConnection=None) -> bool:
+    def __init__(self, connection:DatabaseConnection=None) -> None:
         self.connection = connection or DatabaseConnection()
         self._data = None
 

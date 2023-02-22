@@ -1,5 +1,5 @@
-from log.log_tasks import logger
-from protocols.database_protocols import DatabaseConnection
+from .log_interface import logger
+from ..protocols.database_protocols import DatabaseConnection
 from pathlib import Path
 from typing import List, Tuple, Any, Dict
 from polars import (DataFrame, 
