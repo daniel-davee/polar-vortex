@@ -19,7 +19,8 @@ def parse_value(context,value):
 
 @given(u'the log level is {level}')
 def step_impl(context, level):
-    logger.set_log_level(logger.logLevels[level])
+    logger.info(f'log {level=}')
+    logger.set_minimum_level(logger.logLevels[level])
 
 @given(u'database and key_file should not exist')
 def step_impl(context):

@@ -12,7 +12,6 @@ from interfaces.polar_interface import (PolarsInterface,
 root = Path()
 databases = root / 'databases'
 
-logger.set_minimum_level(logger.logLevels['debug'])
 class PolarModel():
     '''
     This is the base model for all models. 
