@@ -6,8 +6,9 @@ from candy.candy_wrapper import Wrapper
 from candy.candy_wrapper import Wrapper
 from functools import partial
 from polars import LazyFrame
+from typing import Any
 
-def parse_value(context,value):
+def parse_value(context,value:str) -> Any:
     match(value):
         case 'None': return None
         case v if ':' in v: return dict(map(lambda x: x.split(':'), v.split(',')))
@@ -56,25 +57,30 @@ def step_impl(context, verb):
         case 'key_file': context.result = Wrapper(pi.key_file.exists)
         case _: raise NotImplementedError(f'{verb} is not implemented')
 
-@then(u'result {prep}; {args} should be returned')
-def step_impl(context,prep,args):
+@then(u'all values should be the result')
+def step_impl(context):
+    result = context.result()
+    database, key = context.variables.connection()
+    df = PolarsInterface(DatabasePtr(database,key))\
+                            .lazyframe\
+                            .collect()
+    result = result.drop('index').collect()
+    logger.debug(f'{result=},{df=},{df.frame_equal(result)=}')
+    assert result.frame_equal(df)
+
+
+@then(u'the value at {index} should be returned')
+def step_impl(context, index):
+    result = context.result()
+    if isinstance(result, LazyFrame): result = result.collect()
+    index , result = int(index), result.collect()
+    logger.debug(f'{result=},{index=}') 
+    assert result['index'] == index
+
+@then(u'{value} should be returned')
+def step_impl(context, value):
     result = context.result()
     if isinstance(result, LazyFrame): result = result.drop('index').collect()
-    logger.debug(f'{result=},{prep=},{args=}')
-    match(prep):
-        case 'at':
-            index , result = int(args), result.collect()
-            logger.debug(f'{result=},{index=}') 
-            assert result['index'] == int(args)
-        case 'of':
-            logger.debug(f'{result=},{(pv:=parse_value(context,args))=}') 
-            assert result == pv
-        case 'all': 
-            database, key = context.variables.connection()
-            df = PolarsInterface(DatabasePtr(database,key))\
-                                    .lazyframe\
-                                    .collect()
-            result = result.drop('index').collect()
-            logger.debug(f'{result=},{df=},{df.frame_equal(result)=}')
-            assert result.frame_equal(df)
-        case _: raise NotImplementedError(f'{prep} is not implemented')
+    logger.debug(f'{result=},{(pv:=parse_value(context,value))=}') 
+    assert result == pv
+
