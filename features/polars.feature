@@ -6,8 +6,9 @@ Feature:  Polars Database Interfaces
   Background: Setup intial objects
     Given the variable value is foo:420, bar:69
      And the variable index is None
-     And the variable connection is behave, test
-     And the log level is info
+     And the variable database is behave
+     And the variable key is test
+     And the log level is debug
 
     Scenario: Create database and and key_file 
       Given database and key_file should not exist

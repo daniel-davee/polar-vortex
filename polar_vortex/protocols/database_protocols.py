@@ -4,8 +4,8 @@ from typing import (
                     Optional,
                     NamedTuple,
                     )
-from dataclasses import dataclass, astuple
 from pathlib import Path
+from polar_vortex.interfaces.log_interface import logger
 
 db_path = Path(__file__).parent
 
@@ -18,15 +18,6 @@ class DatabasePtr(NamedTuple):
     key: Optional[str] = None
     index:Optional[int] = None
 
-@dataclass
-class DatabaseConnection():
-    
-    data_address : DatabasePtr
-    value : Any = None
-    
-    def __iter__(self):
-        return iter(self.data_address+(self.value))
-
 class DatabaseProtocol(Protocol):
 
     '''
@@ -34,7 +25,7 @@ class DatabaseProtocol(Protocol):
     '''    
     
     def get(self,
-            connection:Optional[DatabaseConnection]
+            connection:Optional[DatabasePtr]
             ) -> Any:
         '''
         get a value from the database with a key and possible index
@@ -42,7 +33,7 @@ class DatabaseProtocol(Protocol):
         ...
 
     def upsert(self, 
-            connection:Optional[DatabaseConnection]
+            connection:Optional[DatabasePtr]
             ) -> bool:
         '''
         set a value in the database with a key and possible index
@@ -50,7 +41,7 @@ class DatabaseProtocol(Protocol):
         ...
 
     def delete(self, 
-               connection:Optional[DatabaseConnection],
+               connection:Optional[DatabasePtr],
                locked:bool=True,
                ) -> bool:
         '''
@@ -59,7 +50,7 @@ class DatabaseProtocol(Protocol):
         ...
         
     def all(self, 
-            connection:Optional[DatabaseConnection],
+            connection:Optional[DatabasePtr],
             ) -> Any:
         '''
         Get all values from the database with a key
@@ -67,7 +58,7 @@ class DatabaseProtocol(Protocol):
         ...
    
     def contains(self,
-                connection:Optional[DatabaseConnection],
+                connection:Optional[DatabasePtr],
                  )-> bool:
         '''
         Checks if a key is a database
@@ -76,7 +67,7 @@ class DatabaseProtocol(Protocol):
        
         
     def is_in(self,
-              connection:Optional[DatabaseConnection],
+              connection:Optional[DatabasePtr],
                  )-> bool:
         '''
         checks if a value is in db object
@@ -85,7 +76,7 @@ class DatabaseProtocol(Protocol):
         
         
     def save(self,
-             connection:Optional[DatabaseConnection],
+             connection:Optional[DatabasePtr],
                )-> bool:
         '''
         Commits a database to disk. This could a bulk save.

@@ -1,10 +1,11 @@
 from behave import given, when, then
 from polar_vortex.interfaces.log_interface import logger
 from polar_vortex.interfaces.polar_interface import PolarsInterface
-from polar_vortex.protocols.database_protocols import DatabaseConnection
+from polar_vortex.protocols.database_protocols import DatabasePtr
 from candy.candy_wrapper import Wrapper
 from candy.candy_wrapper import Wrapper
 from functools import partial
+from polars import LazyFrame
 
 def parse_value(context,value):
     match(value):
@@ -19,13 +20,13 @@ def parse_value(context,value):
 
 @given(u'the log level is {level}')
 def step_impl(context, level):
-    logger.info(f'log {level=}')
+    logger.info(f'{"#"*20} log {level=}')
     logger.set_minimum_level(logger.logLevels[level])
 
 @given(u'database and key_file should not exist')
 def step_impl(context):
-    database, key = context.variables.connection()
-    pi = PolarsInterface(DatabaseConnection(database,key))
+    database, key = context.variables.database(), context.variables.key()
+    pi = PolarsInterface(DatabasePtr(database,key))
     pi.key_file.unlink()
     pi.key_file.parent.rmdir()
 
@@ -40,16 +41,16 @@ def step_impl(context, name, value):
 @when(u'run {verb}')
 def step_impl(context, verb):
     variables = context.variables
-    database, key = variables.connection()
+    database, key = variables.database(), variables.key()
     index, value = variables.index(), variables.value()
-    pi = PolarsInterface(DatabaseConnection(database,key))
-    connection = DatabaseConnection(database,key,value,index)
+    ptr = DatabasePtr(database,key,index)
+    pi = PolarsInterface(ptr)
     match(verb):
         case 'create': context.result = Wrapper(pi)
         case 'save': context.result = Wrapper(pi.save)
         case 'upsert': context.result = Wrapper(partial(pi.upsert,[value]))
-        case 'get': context.result = Wrapper(partial(pi.get,connection,indexed=True))
-        case 'delete':context.result = Wrapper(partial(pi.delete,connection,variables.locked))
+        case 'get': context.result = Wrapper(partial(pi.get,ptr,indexed=True))
+        case 'delete':context.result = Wrapper(partial(pi.delete,ptr,variables.locked))
         case 'all': context.result = Wrapper(pi.all)
         case 'empty': context.result = Wrapper(pi.is_empty)
         case 'key_file': context.result = Wrapper(pi.key_file.exists)
@@ -58,6 +59,7 @@ def step_impl(context, verb):
 @then(u'result {prep}; {args} should be returned')
 def step_impl(context,prep,args):
     result = context.result()
+    if isinstance(result, LazyFrame): result = result.drop('index').collect()
     logger.debug(f'{result=},{prep=},{args=}')
     match(prep):
         case 'at':
@@ -65,11 +67,11 @@ def step_impl(context,prep,args):
             logger.debug(f'{result=},{index=}') 
             assert result['index'] == int(args)
         case 'of':
-            logger.debug(f'{result=},{(pv:=parse_value(context,args))}') 
+            logger.debug(f'{result=},{(pv:=parse_value(context,args))=}') 
             assert result == pv
         case 'all': 
             database, key = context.variables.connection()
-            df = PolarsInterface(DatabaseConnection(database,key))\
+            df = PolarsInterface(DatabasePtr(database,key))\
                                     .lazyframe\
                                     .collect()
             result = result.drop('index').collect()
