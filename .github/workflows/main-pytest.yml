@@ -24,6 +24,7 @@ jobs:
       # number in the cache key, and the "-0" suffix: this allows you to invalidate the cache
       # manually if/when you want to upgrade Poetry, or if something goes wrong. This could be
       # mildly cleaner by using an environment variable, but I don't really care.
+      - run: pip install inquirerpy
       - name: cache poetry install
         uses: actions/cache@v2
         with:
