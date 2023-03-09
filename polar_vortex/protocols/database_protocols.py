@@ -1,13 +1,12 @@
 from typing import (
                     Protocol,
-                    Any,
+                    Any,Set,
                     Optional,
                     NamedTuple,
+                    List, Dict,
+                    TypeAlias
                     )
-from pathlib import Path
-from polar_vortex.interfaces.log_interface import logger
-
-db_path = Path(__file__).parent
+from queue import PriorityQueue
 
 class DatabasePtr(NamedTuple):
     '''
@@ -16,32 +15,67 @@ class DatabasePtr(NamedTuple):
     '''
     database:Optional[str] = None
     key: Optional[str] = None
-    index:Optional[int] = None
 
+class DataOperationPtr(NamedTuple):
+    indexs:Optional[PriorityQueue[int] or int] = None
+    columns:Optional[Set[str] or NamedTuple or Dict] = None
+
+Datum: TypeAlias = NamedTuple
+Data: TypeAlias = List
 class DatabaseProtocol(Protocol):
 
     '''
     DatabaseProtocol defines the actions that can be performed on a database.
-    '''    
+    '''
     
-    def get(self,
-            connection:Optional[DatabasePtr]
-            ) -> Any:
+    db_ptr: DatabasePtr
+    values: Data[Datum]
+    
+    def detect_change(self,) -> bool:
+        """
+        detect_change in underlying database. Useful for reducing reads.
+        Returns:
+            bool: if the underlying database changed,
+                    return True
+        """        
+        ...
+        
+    def save(self,)-> Any:
         '''
-        get a value from the database with a key and possible index
+        Commits a database to disk. This could a bulk save.
         '''
         ...
+    
+    def verify_datum(datum:Datum) -> bool:
+        """
+        verifies data before adding
+        Args:
+            datum (Datum): the piece of data. Just checks column names match ATM.
 
-    def upsert(self, 
-            connection:Optional[DatabasePtr]
+        Returns:
+            bool: if the columns match
+        """ 
+        ...    
+
+    def upsert(self,
+            data: Data or Datum,
+            op_ptrs:Optional[DataOperationPtr]
             ) -> bool:
         '''
         set a value in the database with a key and possible index
         '''
         ...
 
+    def get(self,
+            op_ptrs:Optional[DataOperationPtr]
+            ) -> Any:
+        '''
+        get a value from the database with a key and possible index
+        '''
+        ...
+
     def delete(self, 
-               connection:Optional[DatabasePtr],
+               op_ptrs:Optional[DataOperationPtr],
                locked:bool=True,
                ) -> bool:
         '''
@@ -49,36 +83,26 @@ class DatabaseProtocol(Protocol):
         '''
         ...
         
-    def all(self, 
-            connection:Optional[DatabasePtr],
-            ) -> Any:
+    def all(self, ) -> Any:
         '''
         Get all values from the database with a key
         '''
         ...
    
     def contains(self,
-                connection:Optional[DatabasePtr],
+                op_ptrs:Optional[DataOperationPtr],
                  )-> bool:
         '''
-        Checks if a key is a database
+        Checks if databases exist or if a key is a database or if column is in key
         '''
         ... 
        
         
     def is_in(self,
-              connection:Optional[DatabasePtr],
+              data:Data or Datum,
                  )-> bool:
         '''
         checks if a value is in db object
         '''
         ...
         
-        
-    def save(self,
-             connection:Optional[DatabasePtr],
-               )-> bool:
-        '''
-        Commits a database to disk. This could a bulk save.
-        '''
-        ...

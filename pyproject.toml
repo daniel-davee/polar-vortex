@@ -22,6 +22,8 @@ jupyter = "^1.0.0"
 sphinx = "^6.1.3"
 chat-companion = "^0.1.6"
 sphinx-rtd-theme = "^1.2.0"
+pytest = "^7.2.2"
+mypy = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]

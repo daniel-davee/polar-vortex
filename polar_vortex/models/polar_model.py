@@ -2,7 +2,7 @@ from typing import NamedTuple, Any, Tuple, Dict, Set, List, Iterable
 from dataclasses import dataclass, field, fields, astuple, asdict
 from pathlib import Path
 from interfaces.log_interface import logger
-from protocols.database_protocols import DatabaseProtocol, DatabasePtr
+from protocols.database_protocols import DatabaseProtocol, DataOperationPtr
 from interfaces.polar_interface import (PolarsInterface, 
                                         LazyFrame,
                                         col,
@@ -20,12 +20,12 @@ class PolarModel():
     The PolarsInterface is a lazy interface to the parquet files,
     which controls the data view.
     '''
-    connection:DatabasePtr = DatabasePtr(database='default', key='default')
+    connection:DataOperationPtr = DataOperationPtr(database='default', key='default')
     _dbi = PolarsInterface
     dbi:DatabaseProtocol = _dbi(connection)
 
     @classmethod    
-    def connect(cls, connection:DatabasePtr=None) -> bool:
+    def connect(cls, connection:DataOperationPtr=None) -> bool:
         connection = cls.connection = connection or cls.connection
         cls.dbi = cls._dbi(connection)
         return True
@@ -60,10 +60,10 @@ class PolarModel():
         Field.save()
    
     def delete(self,) -> bool:
-        return self.dbi.delete(DatabasePtr(value=self.as_dict))
+        return self.dbi.delete(DataOperationPtr(value=self.as_dict))
 
     @classmethod
-    def get(cls, db_connection:DatabasePtr,
+    def get(cls, db_connection:DataOperationPtr,
                 limit:int=2,
                 indexed:bool=False,
                 page_number:int=0,
@@ -92,7 +92,7 @@ class PolarModel():
             page_number:int=0,
             ) -> List[Tuple]:
         database, key, _, _ = cls.connection
-        return cls.get(DatabasePtr(database,key,None,None),limit,indexed,page_number)
+        return cls.get(DataOperationPtr(database,key,None,None),limit,indexed,page_number)
 
     @classmethod
     def contains(cls, key:str='')->bool:
@@ -116,6 +116,6 @@ class Field(PolarModel):
     Type: str
     
     class Meta(PolarModel.Meta):
-        connection = DatabasePtr('model','fields')
+        connection = DataOperationPtr('model','fields')
         
 Field.Meta.connect()

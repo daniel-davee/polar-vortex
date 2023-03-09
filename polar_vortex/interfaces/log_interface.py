@@ -28,3 +28,9 @@ pp = PrettyPrinter(indent=4)
 
 
 logger.set_log_file_basename((log_dir/'main_logs').as_posix())
+
+def set_log_level(level:str) -> str:
+    logger.set_minimum_level(logger.logLevels[level])
+    logger.debug(f'Set log level to {level}')
+    
+logger.set_log_level = set_log_level
