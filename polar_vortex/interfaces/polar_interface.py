@@ -2,7 +2,7 @@ from .log_interface import logger
 from ..protocols.database_protocols import  (
                                                 DatabasePtr,
                                                 DataOperationPtr,
-                                                Data,Datum
+                                                Data,DataPoint
                                              )
 from pathlib import Path
 from shutil import rmtree
@@ -35,7 +35,7 @@ class PolarsInterface():
             db_file.mkdir()
         self.key_file:Path = db_file/f'{key}.{file_type}'
         self.lazyframe:LazyFrame = LazyFrame() if self.is_empty else self.scan
-        self.values:Data[Datum] = list()
+        self.values:Data[DataPoint] = list()
 
     def __call__(self,) -> LazyFrame:
         return self.lazyframe
@@ -86,7 +86,7 @@ class PolarsInterface():
         self.lazyframe = self.scan
         return self()
 
-    def verify_datum(self,datum:Datum) -> bool:
+    def verify_datum(self,datum:DataPoint) -> bool:
         """
         verifies data before adding
         Args:
@@ -100,7 +100,7 @@ class PolarsInterface():
     
     
     def upsert(self, 
-               values:Data or Datum, 
+               values:Data or DataPoint, 
                op_ptrs:DataOperationPtr = None) -> bool:
         """
         Upserts values into op_ptr location 
@@ -115,7 +115,7 @@ class PolarsInterface():
             bool: _description_
         """        
         if not isinstance(values, Data):values = [values]
-        datum: Datum = values[0]
+        datum: DataPoint = values[0]
         logger.debug(f'{values=}, {self.key_file}')
         match(op_ptrs):
             case _ if self.is_empty:

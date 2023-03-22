@@ -1,9 +1,9 @@
 from typing import TypeAlias
-from polar_vortex.interfaces.polar_interface import PolarsInterface, db_path
+from polar_vortex.interfaces.vortex_interface import VortexInterface, db_path
 from polar_vortex.protocols.database_protocols import (
                                                         DatabasePtr,
                                                         DataOperationPtr,
-                                                        Data, DataPoint
+                                                        Data, Datum, Fact
                                                         )
 from polar_vortex.interfaces.log_interface import logger
 from os import remove
@@ -17,24 +17,23 @@ logger.set_log_level('debug')
     pi = PolarInterface = (ptr)
 '''
 
-class FooBar(DataPoint):
+class DoubleKey(Fact):
+    key1:str
+    key2:str
+
+class FooBar(Datum):
     foo:int
     bar:str
 
 FooBars: TypeAlias = Data[FooBar]
 
 @fixture
+def double_key() -> DoubleKey:
+    return DoubleKey('foo','bar')
+
+@fixture
 def db_ptr() -> DatabasePtr:
-    return DatabasePtr('test', 'foo')
-
-@fixture
-def key_file(db_ptr) -> Path:
-    database, key = db_ptr
-    return db_path/f'{database}/{key}.parquet'
-
-@fixture
-def pi(db_ptr) -> PolarsInterface:
-    return PolarsInterface(db_ptr)
+    return DatabasePtr('test', 'foobar')
 
 @fixture
 def hitch_hiker_datum() -> FooBar:
@@ -49,23 +48,25 @@ def weed_datum() -> FooBar:
     return FooBar(420,'High world')
 
 @fixture
-def test_keyfile_dne(key_file):
-    if key_file.exists(): remove(key_file)
-    assert not key_file.exists()
+def test_keyfile_dne(db_ptr:DatabasePtr)->DatabasePtr:
+    database  = [f for f in db_path.iterdir() if f.name == db_ptr.database]
+    map(remove, database)
+    assert all(not f.exists() for f in database)
+    return db_ptr
     
-    
-def test_create_interface(pi: PolarsInterface, test_keyfile_dne):
+@fixture
+def test_create_interface(test_keyfile_dne:DatabasePtr)->VortexInterface:
     
     '''
     After pi =  PolarsInterface(ptr) key_file should exist and pi.is_empty()
     '''
+    assert (vi:=VortexInterface(test_keyfile_dne)).is_empty
+    return vi
     
-    assert pi.is_empty
-    
-    
-def test_upsert(pi,hitch_hiker_datum):
+def test_upsert(test_create_interface:VortexInterface,hitch_hiker_datum):
     '''
     After pi.upsert([{bar:42},{bar:69}]) pi.is_empty() should be false
     '''
-    pi.upsert(hitch_hiker_datum)
-    assert not pi.is_empty
+    vi = test_create_interface
+    vi.upsert(hitch_hiker_datum)
+    assert not vi.is_empty

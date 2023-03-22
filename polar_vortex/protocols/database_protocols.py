@@ -4,24 +4,27 @@ from typing import (
                     Optional,
                     NamedTuple,
                     List, Dict,
+                    TypedDict,
                     TypeAlias
                     )
 from queue import PriorityQueue
 
-class DatabasePtr(NamedTuple):
+KeyDatum: TypeAlias = NamedTuple
+Datum: TypeAlias = TypedDict
+DataPoint: TypeAlias = KeyDatum or Datum
+Data: TypeAlias = List or List[DataPoint]
+class DatabasePtr(KeyDatum):
     '''
     DatabaseConnections provides a uniform method to pass input to all the functions of the protocol. 
     The design pattern is Protocol defines actions, the Interface provides a uniform function interface.
     '''
     database:Optional[str] = None
-    key: Optional[str] = None
+    key: Optional[str or KeyDatum] = None
 
 class DataOperationPtr(NamedTuple):
     indexs:Optional[PriorityQueue[int] or int] = None
-    columns:Optional[Set[str] or NamedTuple or Dict] = None
+    columns:Optional[Set[str] or DataPoint] = None
 
-Datum: TypeAlias = NamedTuple
-Data: TypeAlias = List
 class DatabaseProtocol(Protocol):
 
     '''
@@ -29,7 +32,7 @@ class DatabaseProtocol(Protocol):
     '''
     
     db_ptr: DatabasePtr
-    values: Data[Datum]
+    values: Data
     
     def detect_change(self,) -> bool:
         """
@@ -46,7 +49,7 @@ class DatabaseProtocol(Protocol):
         '''
         ...
     
-    def verify_datum(datum:Datum) -> bool:
+    def verify_datum(datum:DataPoint) -> bool:
         """
         verifies data before adding
         Args:
@@ -58,7 +61,7 @@ class DatabaseProtocol(Protocol):
         ...    
 
     def upsert(self,
-            data: Data or Datum,
+            data: Data or DataPoint,
             op_ptrs:Optional[DataOperationPtr]
             ) -> bool:
         '''
@@ -99,7 +102,7 @@ class DatabaseProtocol(Protocol):
        
         
     def is_in(self,
-              data:Data or Datum,
+              data:Data or DataPoint,
                  )-> bool:
         '''
         checks if a value is in db object
