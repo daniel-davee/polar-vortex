@@ -1,7 +1,7 @@
 from behave import given, when, then
 from polar_vortex.interfaces.log_interface import logger
 from polar_vortex.interfaces.polar_interface import PolarsInterface
-from polar_vortex.protocols.database_protocols import DataOperationPtr
+from polar_vortex.protocols.database_protocols import DatabasePtr
 from candy.candy_wrapper import Wrapper
 from candy.candy_wrapper import Wrapper
 from functools import partial
@@ -27,7 +27,7 @@ def step_impl(context, level):
 @given(u'database and key_file should not exist')
 def step_impl(context):
     database, key = context.variables.database(), context.variables.key()
-    pi = PolarsInterface(DataOperationPtr(database,key))
+    pi = PolarsInterface(DatabasePtr(database,key))
     pi.key_file.unlink()
     pi.key_file.parent.rmdir()
 
@@ -44,7 +44,7 @@ def step_impl(context, verb):
     variables = context.variables
     database, key = variables.database(), variables.key()
     index, value = variables.index(), variables.value()
-    ptr = DataOperationPtr(database,key,index)
+    ptr = DatabasePtr(database,key,index)
     pi = PolarsInterface(ptr)
     match(verb):
         case 'create': context.result = Wrapper(pi)
@@ -61,7 +61,7 @@ def step_impl(context, verb):
 def step_impl(context):
     result = context.result()
     database, key = context.variables.connection()
-    df = PolarsInterface(DataOperationPtr(database,key))\
+    df = PolarsInterface(DatabasePtr(database,key))\
                             .lazyframe\
                             .collect()
     result = result.drop('index').collect()

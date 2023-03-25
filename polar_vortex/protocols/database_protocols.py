@@ -9,19 +9,19 @@ from typing import (
                     )
 from queue import PriorityQueue
 
-KeyDatum: TypeAlias = NamedTuple
+Fact: TypeAlias = NamedTuple
 Datum: TypeAlias = TypedDict
-DataPoint: TypeAlias = KeyDatum or Datum
+DataPoint: TypeAlias = Fact or Datum or Dict or int or float or str or bool or None
 Data: TypeAlias = List or List[DataPoint]
-class DatabasePtr(KeyDatum):
+class DatabasePtr(Fact):
     '''
     DatabaseConnections provides a uniform method to pass input to all the functions of the protocol. 
     The design pattern is Protocol defines actions, the Interface provides a uniform function interface.
     '''
     database:Optional[str] = None
-    key: Optional[str or KeyDatum] = None
+    key: Optional[str] = None
 
-class DataOperationPtr(NamedTuple):
+class DataOperationPtr(Fact):
     indexs:Optional[PriorityQueue[int] or int] = None
     columns:Optional[Set[str] or DataPoint] = None
 
@@ -32,7 +32,7 @@ class DatabaseProtocol(Protocol):
     '''
     
     db_ptr: DatabasePtr
-    values: Data
+    values: Data or DataPoint
     
     def detect_change(self,) -> bool:
         """
@@ -93,7 +93,7 @@ class DatabaseProtocol(Protocol):
         ...
    
     def contains(self,
-                op_ptrs:Optional[DataOperationPtr],
+                op_ptrs:Optional[DataOperationPtr] or Fact or str,
                  )-> bool:
         '''
         Checks if databases exist or if a key is a database or if column is in key
@@ -102,10 +102,15 @@ class DatabaseProtocol(Protocol):
        
         
     def is_in(self,
-              data:Data or DataPoint,
+              data:DataPoint,
                  )-> bool:
         '''
         checks if a value is in db object
         '''
         ...
         
+    def is_empty(self,)-> bool:
+        '''
+        checks if a value is in db object
+        '''
+        ...

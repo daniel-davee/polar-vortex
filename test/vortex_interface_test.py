@@ -1,14 +1,13 @@
-from typing import TypeAlias
+from typing import TypeAlias, Tuple
 from polar_vortex.interfaces.vortex_interface import VortexInterface, db_path
 from polar_vortex.protocols.database_protocols import (
                                                         DatabasePtr,
-                                                        DataOperationPtr,
+                                                        DatabasePtr,
                                                         Data, Datum, Fact
                                                         )
 from polar_vortex.interfaces.log_interface import logger
 from os import remove
-from pytest import fixture
-from pathlib import Path
+from pytest import mark
 
 logger.set_log_level('debug')
 
@@ -17,56 +16,49 @@ logger.set_log_level('debug')
     pi = PolarInterface = (ptr)
 '''
 
-class DoubleKey(Fact):
-    key1:str
-    key2:str
-
 class FooBar(Datum):
     foo:int
     bar:str
 
 FooBars: TypeAlias = Data[FooBar]
 
-@fixture
-def double_key() -> DoubleKey:
-    return DoubleKey('foo','bar')
+my_key: str = 'my_key'
 
-@fixture
-def db_ptr() -> DatabasePtr:
-    return DatabasePtr('test', 'foobar')
+db_ptrs: Tuple[DatabasePtr, DatabasePtr] = (DatabasePtr('test', my_key),
+                                            DatabasePtr('foobar', None))
 
-@fixture
-def hitch_hiker_datum() -> FooBar:
-    return FooBar(42,'The ultimate answer')
+hitch_hiker_datum: FooBar = FooBar({'foo':42,
+                                    'bar':'The ultimate answer'})
 
-@fixture
-def nice_datum() -> FooBar:
-    return FooBar(96,'Nice?')
-
-@fixture
-def weed_datum() -> FooBar:
-    return FooBar(420,'High world')
-
-@fixture
-def test_keyfile_dne(db_ptr:DatabasePtr)->DatabasePtr:
-    database  = [f for f in db_path.iterdir() if f.name == db_ptr.database]
-    map(remove, database)
-    assert all(not f.exists() for f in database)
-    return db_ptr
+@mark.order(1)
+def test_db_ptr():
+    list(map(remove,(database:=filter(lambda f:f.stem in {k.database for k in db_ptrs}, 
+                                       db_path.iterdir()))))
+    assert not any(f.exists() for f in database)
+    return db_ptrs
     
-@fixture
-def test_create_interface(test_keyfile_dne:DatabasePtr)->VortexInterface:
+@mark.order(2)
+def test_create_interfaces():
     
     '''
     After pi =  PolarsInterface(ptr) key_file should exist and pi.is_empty()
     '''
-    assert (vi:=VortexInterface(test_keyfile_dne)).is_empty
-    return vi
-    
-def test_upsert(test_create_interface:VortexInterface,hitch_hiker_datum):
+    k_vis, db_vis = vis = tuple(map(VortexInterface, db_ptrs))
+    logger.debug(f'{k_vis.values=}')
+    logger.debug(f'{db_vis.values=}')
+    assert all(vi.is_empty() for vi in vis)
+
+@mark.order(3)
+def test_upsert():
     '''
     After pi.upsert([{bar:42},{bar:69}]) pi.is_empty() should be false
     '''
-    vi = test_create_interface
-    vi.upsert(hitch_hiker_datum)
-    assert not vi.is_empty
+    k_vis, db_vis = vis = tuple(map(VortexInterface, db_ptrs))
+    list(map(lambda vi: vi.upsert(hitch_hiker_datum), vis))
+    assert not k_vis.is_empty()
+    assert k_vis.is_in(hitch_hiker_datum)
+    assert k_vis.contains(my_key)
+    assert db_vis.contains('foo')
+    assert db_vis.contains('bar')
+    assert db_vis.is_in(42)
+    assert db_vis.is_in('The ultimate answer')
