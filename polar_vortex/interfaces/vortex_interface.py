@@ -20,10 +20,11 @@ class VortexInterface():
     VortexInterface provides a uniform interface to a shelve database.
     '''
     
-    def __init__(self, db_ptr:DatabasePtr,data_point:DataPoint=None) -> None:
+    def __init__(self, db_ptr:DatabasePtr,data_point:DataPoint={}) -> None:
         self.values:Dict[Fact or str, DatabasePtr] = {}
         self._del_keys:Set[Fact or str] = set()
-        self.db_ptr = db_ptr 
+        self.db_ptr = db_ptr
+        self.values = {}
         match(data_point):
             case None:
                 self.values = self.get()
@@ -33,7 +34,11 @@ class VortexInterface():
         if not list(self.db_files):self.save()
 
     def __bool__(self,) -> bool:
-        return bool(self.values)
+        match(self.db_ptr):
+            case DatabasePtr(_, None):
+                return bool(self.values)
+            case DatabasePtr(_, key):
+                return bool(self.values[key]) if key in self.values else False
     
     def is_empty(self,) -> bool:
         return not self
@@ -56,6 +61,7 @@ class VortexInterface():
             for key in self._del_keys: del db[key]
             for key,value in self.values.items():db[key] = value
             self._del_keys = set()
+        return True
     
     def upsert(self, data: Data or  DataPoint) -> bool:
         logger.debug(f'{self.db_ptr=}')
@@ -70,10 +76,11 @@ class VortexInterface():
     def get(self,) -> DataPoint:
         if not list(self.db_files): self.save()
         with shelve.open(str(db_path/self.db_ptr.database)) as db:
+            
             match(self.db_ptr):
-                case DatabasePtr(_, None): self.values = dict(db).update(self.values) or {} 
-                case DatabasePtr(_, key) if self.is_empty(): self.values = {}
-                case DatabasePtr(_, key): self.values[key] = self.values[key] or db[key]
+                case DatabasePtr(_, None): self.values.update(dict(db)) 
+                case DatabasePtr(_, key): self.values[key] = db[key] if key in db else {}
+                case _: raise Exception(f'{self.db_ptr=} is not a valid DatabasePtr')
         return self.values
             
     def all(self,) -> List[Dict[str,Any]]:
