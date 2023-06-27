@@ -9,9 +9,9 @@ from polar_vortex.protocols.database_protocols import (
                                             Fact)
 import shelve
 
-db_path = Path(__file__).parent / 'vortex_databases'
+vortex_path = Path(__file__).parent / 'vortex_databases'
 # db_path = Path().cwd() / 'database/vortex_databases'
-if not db_path.exists(): db_path.mkdir()
+if not vortex_path.exists(): vortex_path.mkdir()
 
 
 class VortexInterface():
@@ -36,16 +36,16 @@ class VortexInterface():
     def __bool__(self,) -> bool:
         match(self.db_ptr):
             case DatabasePtr(_, None):
-                return bool(self.values)
+                return bool(self())
             case DatabasePtr(_, key):
-                return bool(self.values[key]) if key in self.values else False
+                return bool(self()[key]) if key in self() else False
     
     def is_empty(self,) -> bool:
         return not self
 
     @property
     def db_files(self,) -> Iterator[Path]:
-        return filter(lambda f: f.stem == self.db_ptr.database, db_path.iterdir())
+        return filter(lambda f: f.stem == self.db_ptr.database, vortex_path.iterdir())
     
     def detect_change(self,) -> bool:
         return True
@@ -57,7 +57,7 @@ class VortexInterface():
         return True
 
     def save(self,) -> bool:
-        with shelve.open(str(db_path/self.db_ptr.database)) as db:
+        with shelve.open(str(vortex_path/self.db_ptr.database)) as db:
             for key in self._del_keys: del db[key]
             for key,value in self.values.items():db[key] = value
             self._del_keys = set()
@@ -68,32 +68,32 @@ class VortexInterface():
         match(self.db_ptr):
             case DatabasePtr(_, None):
                 if not isinstance(data,dict): raise TypeError('data must be a dict')
-                self.values.update(data)
-            case DatabasePtr(_, key): self.values[key] = data
+                self().update(data)
+            case DatabasePtr(_, key): self()[key] = data
             case _: raise Exception(f'{self.db_ptr=} is not a valid DatabasePtr')
         return True
     
     def get(self,) -> DataPoint:
         if not list(self.db_files): self.save()
-        with shelve.open(str(db_path/self.db_ptr.database)) as db:
+        with shelve.open(str(vortex_path/self.db_ptr.database)) as db:
             
             match(self.db_ptr):
-                case DatabasePtr(_, None): self.values.update(dict(db)) 
+                case DatabasePtr(_, None): self().update(dict(db)) 
                 case DatabasePtr(_, key): self.values[key] = db[key] if key in db else {}
                 case _: raise Exception(f'{self.db_ptr=} is not a valid DatabasePtr')
-        return self.values
+        return self()
             
     def all(self,) -> List[Dict[str,Any]]:
         return self.get()
 
     def delete(self,locked:bool=True) -> bool:
         if locked: return False
-        self._del_keys.union(set(self.values.keys()))
+        self._del_keys.union(set(self().keys()))
         self.values = {}
         return True
 
     def keys(self,) -> Set[str]:
-        return self.values.keys()
+        return self().keys()
      
     def __contains__(self,key:str) -> bool:
         return key in self.keys()
@@ -102,4 +102,7 @@ class VortexInterface():
         return key in self
                 
     def is_in(self,data_point:DataPoint) -> bool:
-        return any(value == data_point for value in self.values.values())
+        return any(value == data_point for value in self().values())
+    
+    def __call__(self,) -> Any:
+        return self.values

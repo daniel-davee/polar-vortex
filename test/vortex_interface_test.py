@@ -1,5 +1,5 @@
 from typing import TypeAlias, Tuple
-from polar_vortex.interfaces.vortex_interface import VortexInterface, db_path
+from polar_vortex.interfaces.vortex_interface import VortexInterface, vortex_path
 from polar_vortex.protocols.database_protocols import (
                                                         DatabasePtr,
                                                         DatabasePtr,
@@ -33,7 +33,7 @@ hitch_hiker_datum: FooBar = FooBar({'foo':42,
 @mark.order(1)
 def test_db_ptr():
     list(map(remove,(database:=filter(lambda f:f.stem in {k.database for k in db_ptrs}, 
-                                       db_path.iterdir()))))
+                                       vortex_path.iterdir()))))
     assert not any(f.exists() for f in database)
     return db_ptrs
     
