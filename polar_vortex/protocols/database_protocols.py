@@ -3,17 +3,17 @@ from typing import (
                     Any,Set,
                     Optional,
                     NamedTuple,
-                    List, Dict,
                     TypedDict,
-                    TypeAlias
+                    TypeAlias,
+                    Union
                     )
 from queue import PriorityQueue
 
-Fact: TypeAlias = NamedTuple
+Key: TypeAlias = Union[NamedTuple,str]
 Datum: TypeAlias = TypedDict
-DataPoint: TypeAlias = Fact or Datum or Dict or int or float or str or bool or None
-Data: TypeAlias = List or List[DataPoint]
-class DatabasePtr(Fact):
+DataPoint: TypeAlias = Optional[Union[Key,Datum, dict,int,float]]
+Data: TypeAlias = Union[list,list[DataPoint]]
+class DatabasePtr(NamedTuple):
     '''
     DatabaseConnections provides a uniform method to pass input to all the functions of the protocol. 
     The design pattern is Protocol defines actions, the Interface provides a uniform function interface.
@@ -21,9 +21,9 @@ class DatabasePtr(Fact):
     database:Optional[str] = None
     key: Optional[str] = None
 
-class DataOperationPtr(Fact):
-    indexs:Optional[PriorityQueue[int] or int] = None
-    columns:Optional[Set[str] or DataPoint] = None
+class DataOperationPtr(NamedTuple):
+    indexs:Optional[Union[PriorityQueue[int],int]] = None
+    columns:Optional[Union[set[str],DataPoint]] = None
 
 class DatabaseProtocol(Protocol):
 
@@ -32,7 +32,7 @@ class DatabaseProtocol(Protocol):
     '''
     
     db_ptr: DatabasePtr
-    values: Data or DataPoint
+    values: Union[Data,DataPoint]
     
     def detect_change(self,) -> bool:
         """
@@ -61,7 +61,7 @@ class DatabaseProtocol(Protocol):
         ...    
 
     def upsert(self,
-            data: Data or DataPoint,
+            data: Union[Data,DataPoint],
             op_ptrs:Optional[DataOperationPtr]
             ) -> bool:
         '''
@@ -93,7 +93,7 @@ class DatabaseProtocol(Protocol):
         ...
    
     def contains(self,
-                op_ptrs:Optional[DataOperationPtr] or Fact or str,
+                op_ptrs:Union[DataOperationPtr,Key],
                  )-> bool:
         '''
         Checks if databases exist or if a key is a database or if column is in key

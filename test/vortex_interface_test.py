@@ -3,7 +3,7 @@ from polar_vortex.interfaces.vortex_interface import VortexInterface, vortex_pat
 from polar_vortex.protocols.database_protocols import (
                                                         DatabasePtr,
                                                         DatabasePtr,
-                                                        Data, Datum, Fact
+                                                        Data, Datum, Key
                                                         )
 from polar_vortex.interfaces.log_interface import logger
 from os import remove
@@ -24,7 +24,7 @@ FooBars: TypeAlias = Data[FooBar]
 
 my_key: str = 'my_key'
 
-db_ptrs: Tuple[DatabasePtr, DatabasePtr] = (DatabasePtr('test', my_key),
+db_ptrs: tuple[DatabasePtr, DatabasePtr] = (DatabasePtr('test', my_key),
                                             DatabasePtr('foobar', None))
 
 hitch_hiker_datum: FooBar = FooBar({'foo':42,

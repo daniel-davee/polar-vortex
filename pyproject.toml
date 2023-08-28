@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polar-vortex"
-version = "0.1.0"
+version = "0.1.2"
 description = "Polar Vortex is column store database that uses Polars dataframes and either CSV or Parquet as the underlying storag"
 authors = ["daniel-davee <daniel.v.davee@gmail.com>"]
 license = "Apache 2.0"
@@ -12,7 +12,7 @@ python = "^3.8"
 plac = "^1.3.5"
 pysimplelog = "^4.0.0"
 polars = "^0.16.8"
-candy-wrapper = "^0.0.2"
+candy-wrapper = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.10.0"

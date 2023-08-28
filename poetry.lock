@@ -4,7 +4,7 @@
 name = "aiohttp"
 version = "3.8.4"
 description = "Async http client/server framework (asyncio)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -113,7 +113,7 @@ speedups = ["Brotli", "aiodns", "cchardet"]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -264,7 +264,7 @@ test = ["astroid", "pytest"]
 name = "async-timeout"
 version = "4.0.2"
 description = "Timeout context manager for asyncio programs"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -276,7 +276,7 @@ files = [
 name = "attrs"
 version = "22.2.0"
 description = "Classes Without Boilerplate"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -429,24 +429,25 @@ css = ["tinycss2 (>=1.1.0,<1.2)"]
 
 [[package]]
 name = "candy-wrapper"
-version = "0.0.2"
-description = "A sweet wrapper that lets object act js objects"
+version = "1.0.1"
+description = "A \"sticky\" wrapper for any object, that allow other objects to be add as propeties, which can be access through the .key notation or [key] notation. To unrap the object just add () notation to the end of the function."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "candy_wrapper-0.0.2-py3-none-any.whl", hash = "sha256:3244de5fe8cbd9be9bae6740867d25a3c60c3e7127e5e279dd005354696fd4e4"},
-    {file = "candy_wrapper-0.0.2.tar.gz", hash = "sha256:445761411533e84ec692b6788da3f510d46ef76d5b55e139a12d83455522d88b"},
+    {file = "candy_wrapper-1.0.1-py3-none-any.whl", hash = "sha256:f6346d8986d123a9b5d86684eaaaf0e90b1ca35fd0af8bd134e9d2eb6bd2f142"},
+    {file = "candy_wrapper-1.0.1.tar.gz", hash = "sha256:2b845f15993be1d6abfee853d1d8a2a3623bcc1fb90b3659a0563e289f100f1f"},
 ]
 
 [package.dependencies]
-yes-or-no = "*"
+pysimplelog = ">=4.0.0,<5.0.0"
+yes-or-no = ">=1.0.0,<2.0.0"
 
 [[package]]
 name = "certifi"
 version = "2022.12.7"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -535,7 +536,7 @@ pycparser = "*"
 name = "charset-normalizer"
 version = "3.0.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -633,7 +634,7 @@ files = [
 name = "chat-companion"
 version = "0.1.6"
 description = "A chat gpt command line client with extra features\""
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
@@ -666,7 +667,7 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
@@ -816,7 +817,7 @@ files = [
 name = "frozenlist"
 version = "1.3.3"
 description = "A list-like structure which implements collections.abc.MutableSequence"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -900,7 +901,7 @@ files = [
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -975,7 +976,7 @@ files = [
 name = "inquirerpy"
 version = "0.3.4"
 description = "Python port of Inquirer.js (A collection of common interactive command-line user interfaces)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
@@ -1479,7 +1480,7 @@ files = [
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1807,7 +1808,7 @@ test = ["pytest", "pytest-console-scripts", "pytest-tornasync"]
 name = "openai"
 version = "0.26.5"
 description = "Python client library for the OpenAI API"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7.1"
 files = [
@@ -1927,7 +1928,7 @@ ptyprocess = ">=0.5"
 name = "pfzy"
 version = "0.3.4"
 description = "Python port of the fzy fuzzy string matching algorithm"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
@@ -2056,7 +2057,7 @@ twisted = ["twisted"]
 name = "prompt-toolkit"
 version = "3.0.37"
 description = "Library for building powerful interactive command lines in Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
@@ -2488,7 +2489,7 @@ test = ["pytest (>=6,!=7.0.0,!=7.0.1)", "pytest-cov (>=3.0.0)", "pytest-qt"]
 name = "requests"
 version = "2.28.2"
 description = "Python HTTP for Humans."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7, <4"
 files = [
@@ -2878,7 +2879,7 @@ files = [
 name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 files = [
@@ -2942,7 +2943,7 @@ dev = ["flake8 (<4.0.0)", "flake8-annotations", "flake8-bugbear", "flake8-commas
 name = "urllib3"
 version = "1.26.14"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
@@ -2959,7 +2960,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 name = "wcwidth"
 version = "0.2.6"
 description = "Measures the displayed width of unicode strings in a terminal"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -3024,7 +3025,7 @@ files = [
 name = "yarl"
 version = "1.8.2"
 description = "Yet another URL library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3110,15 +3111,18 @@ multidict = ">=4.0"
 
 [[package]]
 name = "yes-or-no"
-version = "0.0.1"
-description = "answers yes or no questions"
+version = "1.0.0"
+description = "A silly little helper function, that is strangly helpful. All it does, is prompt a yes or question, then convert a boolean to the answer of yes or now. This library is meant to be used in debug strings, it is recommended to use in multi line f string meant to be passed to a log.debug. It mean to help make understanding the state just a little easier."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "yes_or_no-0.0.1-py3-none-any.whl", hash = "sha256:cae172332e6d56098484643e8cc4a51f64584ba76af22cff06f7d97fd695cc73"},
-    {file = "yes_or_no-0.0.1.tar.gz", hash = "sha256:647547e22afe0bf738903d60e30585fa081ea9c1a187e02ac92342d3da218528"},
+    {file = "yes_or_no-1.0.0-py3-none-any.whl", hash = "sha256:bb32d224b7703adda421463d4d8e9b8168591179e0047ecbddc70429ef691143"},
+    {file = "yes_or_no-1.0.0.tar.gz", hash = "sha256:997e188554062c743200dc88726c31c3198601483d85b6a9ad7637185e74b094"},
 ]
+
+[package.dependencies]
+chat-companion = ">=0.1.6,<0.2.0"
 
 [[package]]
 name = "zipp"
@@ -3139,4 +3143,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "3aecc6c6d6ea5e5d2f3eba068a28d9c482ef4977fa9234386720ca9ccb49cf5b"
+content-hash = "d9c14fa7ddcd160b9955048bc8ae32a7dc7aba5ede7a85db12c3d6940acf021b"
