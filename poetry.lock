@@ -1390,6 +1390,21 @@ files = [
 ]
 
 [[package]]
+name = "magic-run-cmd"
+version = "1.1.0"
+description = "A simple interface to run a bash command from python. It wraps Popen, so  it's easier to run the command. You can use Script object to write pretty bash scripts in python."
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "magic_run_cmd-1.1.0-py3-none-any.whl", hash = "sha256:33911efdd461cae7cccd318591df76bc5480cceb23bad7203df24fa5726664eb"},
+    {file = "magic_run_cmd-1.1.0.tar.gz", hash = "sha256:0031ac1eb657bd313cca39e025fc0e3f43e00989a221ab5f2b16957d54ffabf9"},
+]
+
+[package.dependencies]
+pysimplelog = ">=4.0.0,<5.0.0"
+
+[[package]]
 name = "markupsafe"
 version = "2.1.2"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -1858,6 +1873,7 @@ category = "dev"
 optional = false
 python-versions = "*"
 files = [
+    {file = "parse-1.19.0-py2.py3-none-any.whl", hash = "sha256:6ce007645384a91150cb7cd7c8a9db2559e273c2e2542b508cd1e342508c2601"},
     {file = "parse-1.19.0.tar.gz", hash = "sha256:9ff82852bcb65d139813e2a5197627a94966245c897796760a3a2a8eb66f020b"},
 ]
 
@@ -3143,4 +3159,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d9c14fa7ddcd160b9955048bc8ae32a7dc7aba5ede7a85db12c3d6940acf021b"
+content-hash = "71770955bbdfacd68d2fd7c3ea41e0ce792b751a531f707526c33ecc7fffb2f6"

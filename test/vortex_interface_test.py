@@ -20,7 +20,7 @@ class FooBar(Datum):
     foo:int
     bar:str
 
-FooBars: TypeAlias = Data[FooBar]
+FooBars: TypeAlias = list[FooBar]
 
 my_key: str = 'my_key'
 
