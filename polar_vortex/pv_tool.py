@@ -1,7 +1,6 @@
 from plac import Interpreter
-from polar_vortex.interfaces.vortex_interface import vortex_path, VortexInterface
-from polar_vortex.protocols.database_protocols import DatabasePtr
-import shelve
+from interfaces.vortex_interface import vortex_path, VortexInterface
+from protocols.database_protocols import DatabasePtr
 
 db_help = '''database name which keys you want to list, if not specified all databases will be listed.'''
 
