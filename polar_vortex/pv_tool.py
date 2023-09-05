@@ -1,6 +1,6 @@
 from plac import Interpreter
-from interfaces.vortex_interface import vortex_path, VortexInterface
-from protocols.database_protocols import DatabasePtr
+from polar_vortex.interfaces.vortex_interface import vortex_path, VortexInterface
+from polar_vortex.protocols.database_protocols import DatabasePtr
 
 db_help = '''database name which keys you want to list, if not specified all databases will be listed.'''
 
@@ -10,7 +10,7 @@ class PolarVortex(object):
     Polar Vortex is the cli for either the polars or vortex databases.
     '''
     
-    commands = 'list', 'get_path'
+    commands:tuple[str] = 'list', 'get_path'
     
     dbs = {db.stem for db in vortex_path.iterdir()}
     
